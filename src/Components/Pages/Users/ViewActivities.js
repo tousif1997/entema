@@ -51,7 +51,7 @@ const DataTable = () => {
             computedComments = computedComments.filter(
                 comment =>
                     comment.ACT_NAME.toLowerCase().includes(search.toLowerCase()) ||
-                    comment.REATED_DATE.toLowerCase().includes(search.toLowerCase())
+                    comment.CREATED_DATE.toLowerCase().includes(search.toLowerCase())
             );
         }
 

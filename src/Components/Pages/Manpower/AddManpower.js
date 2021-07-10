@@ -1,9 +1,11 @@
 import React, { useState } from 'react';
 import axios from 'axios';
+import { useHistory } from "react-router-dom";
 
 
 
 function AddManpower() {
+    const history = useHistory();
 
     const [MpDescription, setMpDescription] = useState();
     const [MpIqamaId, setMpIqamaId] = useState();
@@ -60,6 +62,7 @@ function AddManpower() {
  
         })
         .then((res) => {
+            history.push("/");
           console.log("updated Values Successfully : ", res.data);
         });
  

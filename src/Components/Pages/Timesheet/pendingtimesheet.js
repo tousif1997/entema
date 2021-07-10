@@ -12,6 +12,21 @@ function CreateNote() {
     const [PmDescription, setPmDescription] = useState();
     const [PmStatus, setPmStatus] = useState();
 
+    const ModeLov = [
+        {key : "", value:"Select Status"},
+        {key : "1", value:"Cash"},
+        {key : "2", value:"Bank"}, 
+    ]
+
+    const StatusLov = [
+        {key : "", value:"Select Status"},
+        {key : "1", value:"Advance"},
+        {key : "2", value:"Request"},
+        {key : "3", value:"Paid"},
+        {key : "4", value:"Approved"},  
+    ]
+
+
     const handleChangeEvent = (e) => {
         console.log('e : ', e);
         const input = e.target.name;
@@ -89,25 +104,19 @@ function CreateNote() {
                             <div class="col-md-6 mb-3">
                                 <label for="userFname">Mode</label>
                                 <select class="form-control is-valid" value={PmMode} id="PmMode" name="PmMode" required>
-                                    <option value="">Select Mode</option>
-                                    <option value="1">Cash</option>
-                                    <option value="2">Bank</option>
+                                    {ModeLov.map((data) => <option key={data.key} value={data.key}>{data.value}</option>)} 
                                 </select>
                             </div>
                         </div>
                         <div className="row">
                             <div class="col-md-6 mb-3">
                                 <label for="userFname">Description</label>
-                                <textarea type="text" class="form-control is-valid" value={PmDescription} id="PmDescription" name="PmDescription" required />
+                                <textarea type="text" class="form-control is-valid" value={PmDescription} id="PmDescription" name="PmDescription" />
                             </div>
                             <div class="col-md-6 mb-3">
                                 <label for="userName">Status</label>
                                 <select class="form-control is-valid" value={PmStatus} id="PmStatus" name="PmStatus" required>
-                                    <option value="">Select Status</option>
-                                    <option value="1">Advance</option>
-                                    <option value="2">Request</option>
-                                    <option value="3">Paid</option>
-                                    <option value="4">Approved</option>
+                                {StatusLov.map((data) => <option key={data.key} value={data.key}>{data.value}</option>)} 
                                 </select>
                             </div>
 

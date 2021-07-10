@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import './Adduser.css';
 import DatePicker from 'react-datepicker';
 import "react-datepicker/dist/react-datepicker.css";
@@ -22,44 +22,71 @@ function Adduser(props) {
     const [ userDactdate, setUserDactdate] = useState();
 
     const [ showForm, setShowForm] = useState(true);
-        
+
+    const [ roleLov, setRoleLov] = useState([]);
+
+
     if (props.formAccess === false){
         setShowForm(false);
     } 
 
+    const statusLov = [
+        {key : "", value:"Select Status"},
+        {key : "1", value:"Active"},
+        {key : "2", value:"Inactive"}
+    ]
+
+
+    const getRoleLovData = () => {
+        fetch("http://localhost:3009/getRolesData", {
+            method : 'Get',
+            headers:{
+                'Content-Type':'application/json',
+                    }
+        }).then(response => response.json())
+        .then(response => {setRoleLov(response);
+        console.log('My API data : ',response);
+        });
+       return roleLov; 
+    } 
+
+    useEffect(() => {
+        getRoleLovData();
+    },[]);
+    
     const handleSubmit = (event) => {
-        // console.log('event : ',event.target[0].id);
-        // console.log('event : ',event.target[0].value);
-        event.preventDefault();
+        console.log('event : ',event.target[0].id);
+        console.log('event : ',event.target[0].value);
+        // event.preventDefault();
 
-        // if ( userPwd == userCpwd){
-        //     alert('Hello');
+        if ( userPwd == userCpwd){
+            // alert('Hello');
             
-        //     Axios.post("http://localhost:3009/insertUserData", {
-        //         userName  : userName,
-        //         userFname : userFname,
-        //         userEmail : userEmail,
-        //         userPwd : userPwd,
-        //         userCpwd : userCpwd,
-        //         userPhone : userPhone,
-        //         userDesignation : userDesignation,
-        //         userRole : userRole,
-        //         userStatus : userStatus,
-        //         userActdate : userActdate,
-        //         userDactdate : userDactdate,
-        //        }).then((res) => {
-        //         // setData(res.data);
-        //         //  setDupData(res.data);
-        //          console.log("result set in effect: ", res);
-        //        });
+            Axios.post("http://localhost:3009/insertUserData", {
+                userName  : userName,
+                userFname : userFname,
+                userEmail : userEmail,
+                userPwd : userPwd,
+                userCpwd : userCpwd,
+                userPhone : userPhone,
+                userDesignation : userDesignation,
+                userRole : userRole,
+                userStatus : userStatus,
+                userActdate : userActdate,
+                userDactdate : userDactdate,
+               }).then((res) => {
+                 console.log("result set in effect: ", res);
+                //  history.push("/");
+                // handleReset();
+               });
 
-        //     history.push("/");
+               history.push("/");
 
-        // }else if ( userPwd != userCpwd){
-        //     alert('your password doesnot match');
-        //     return false;
-        // }
-        console.log('event : ',event);
+        }else if ( userPwd != userCpwd){
+            alert('your password are not Identical');
+            return false;
+        }
+
     }
 
   
@@ -98,7 +125,7 @@ function Adduser(props) {
     return (
         <>
             <div class="container" style={{ paddingTop: '30px', paddingLeft: '50px' }}>
-    {showForm && <div>
+    <div>
                 <div className="heading-layout1">
                     <div className="item-title">
                         <h3 style={{ padding: "50px" }}>Add User</h3>
@@ -107,65 +134,62 @@ function Adduser(props) {
                 <form onSubmit={handleSubmit}>
                     <div className="row">
                         <div class="col-md-4 mb-3">
-                            <label for="userName">User name</label>
+                            <label htmlFor="userName">User name</label>
                             <input type="text" class="form-control is-valid" id="userName" name="userName" onChange={handleChangeEvent} required/>
                         </div>
 
                         <div class="col-md-4 mb-3">
-                            <label for="userFname">Full Name</label>
+                            <label htmlFor="userFname">Full Name</label>
                             <input type="text" class="form-control is-valid" id="userFname" name="userFname" onChange={handleChangeEvent} required/>
                         </div>
                         <div class="col-md-4 mb-3">
-                            <label for="userEmail">User Email</label>
+                            <label htmlFor="userEmail">User Email</label>
                             <input type="text" class="form-control is-valid" id="userEmail" name="userEmail" onChange={handleChangeEvent} required/>
                         </div>
                     </div>
                     <div className="row">
                         <div class="col-md-4 mb-3">
-                            <label for="userPwd">Password</label>
+                            <label htmlFor="userPwd">Password</label>
                             <input type="password" class="form-control is-valid" id="userPwd" name="userPwd" onChange={handleChangeEvent} required />
                         </div>
                         <div class="col-md-4 mb-3">
-                            <label for="userCpwd">Confirm Password</label>
+                            <label htmlFor="userCpwd">Confirm Password</label>
                             <input type="password" class="form-control is-valid" id="userCpwd" name="userCpwd" onChange={handleChangeEvent} required />  
                         </div>
                         <div class="col-md-4 mb-3">
-                            <label for="userPhone">Phone</label>
+                            <label htmlFor="userPhone">Phone</label>
                             <input type="text" class="form-control is-valid" id="userPhone" name="userPhone" onChange={handleChangeEvent} required />
                         </div>
                     </div>
                     <div className="row">
                         <div class="col-md-4 mb-3">
-                            <label for="userDesignation">Designation</label>
+                            <label htmlFor="userDesignation">Designation</label>
                             <input type="text" class="form-control is-valid" id="userDesignation" name="userDesignation" onChange={handleChangeEvent} required />
                         </div>
                         <div class="col-md-4 mb-3">
-                            <label for="userRole">Role</label>
+                            <label htmlFor="userRole">Role</label>
                             <select class="form-control is-valid" id="userRole" name="userRole" onChange={handleChangeEvent} required>
-                                <option value="">Select Role</option>
-                                <option value="1">Admin</option>
-                                <option value="2">Operator</option>
+                            <option key="" value="">Select Role</option>
+                            {roleLov.map((data) => <option key={data.RL_ID} value={data.RL_ID}>{data.RL_NAME}</option>)} 
                             </select>
                         </div>
                         <div class="col-md-4 mb-3">
-                            <label for="userStatus">Status</label>
+                            <label htmlFor="userStatus">Status</label>
                             <select class="form-control is-valid" id="userStatus" name="userStatus" onChange={handleChangeEvent} required>
                                 <option value="">select Status</option>
-                                <option value="1">Active</option>
-                                <option value="2">InActive</option>
-
+                                {statusLov.map((data) => <option key={data.key} value={data.key}>{data.value}</option>)} 
                             </select>
                         </div>
                     </div>
                     <div className="row">
                         <div class="col-md-4 mb-3">
 
-                            <label for="userActdate">Activation Date</label>
+                            <label htmlFor="userActdate">Activation Date</label>
                             <input type="date" class="form-control is-valid" id="userActdate" name="userActdate" onChange={handleChangeEvent} required />
                         </div>
                         <div class="col-md-4 mb-3">
 
-                            <label for="userDactdate">Deactivation Date</label>
+                            <label htmlFor="userDactdate">Deactivation Date</label>
                             <input type="date" class="form-control is-valid" id="userDactdate" name="userDactdate" onChange={handleChangeEvent} required />
                         </div>
                     </div>
@@ -174,11 +198,7 @@ function Adduser(props) {
                         <button type="submit" class="btn btn-outline-success">Submit</button>
                     </div>
                 </form> 
-    </div>}
-
-{!showForm && <div className="container" style={{color:"red", alignContent:"center", alignItems:"center", marginTop:"250px"}}>
-    <h1>You do not have permission to access this form</h1>
-</div>}
+    </div>
 
 </div>
 

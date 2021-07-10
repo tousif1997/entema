@@ -1,7 +1,11 @@
 import React, { useState } from "react";
 import axios from 'axios';
 
+import { useHistory } from "react-router-dom";
 function AddClients() {
+
+  const history = useHistory();
+
   const [clientcpname, setClientcpname] = useState();
   const [clientcompname, setClientcompname] = useState();
   const [clientphone, setClientphone] = useState();
@@ -41,6 +45,7 @@ function AddClients() {
    }).then((res) => {
     // setData(res.data);
     //  setDupData(res.data);
+    history.push("/");
      console.log("result set in effect: ", res);
    });
 
@@ -104,7 +109,6 @@ function AddClients() {
                   id="clientemail"
                   name="clientemail"
                   onChange={handleChangeEvent}
-                  required
                 />
               </div>
             </div>

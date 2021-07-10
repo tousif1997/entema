@@ -1,10 +1,12 @@
 import React, {useState} from 'react';
 import axios from 'axios';
+import { useHistory } from "react-router-dom";
 
 
 
 
 function CreateNote() {
+    const history = useHistory();
 
     const [DnClient, setDnClient] = useState();
     const [DnAddress, setDnAddress] = useState();
@@ -49,6 +51,7 @@ function CreateNote() {
  
         })
         .then((res) => {
+            history.push("/");
           console.log("updated Values Successfully : ", res.data);
         });
  

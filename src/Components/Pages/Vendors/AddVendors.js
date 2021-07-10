@@ -1,7 +1,11 @@
 import { useState } from "react";
 import Axios from 'axios';
+import { useHistory } from "react-router-dom";
 
 function AddVendors() {
+
+  const history = useHistory();
+
   const [vendorname, setVendorname] = useState();
   const [vendorcode, setVendorcode] = useState();
   const [vendorfline, setVendorfline] = useState();
@@ -17,6 +21,7 @@ function AddVendors() {
   const [vendordocno, setVendordocno] = useState();
   const [createdby, setCreatedby] = useState("Mazhar");
   const [vendorstatus, setVendorstatus] = useState("Active");
+  
 
   const handleChangeEvent = (e) => {
     console.log("e.target.name : ", e.target.value);
@@ -78,6 +83,8 @@ function AddVendors() {
    }).then((res) => {
     // setData(res.data);
     //  setDupData(res.data);
+    
+    history.push("/");
      console.log("result set in effect: ", res);
    });
 
@@ -118,7 +125,6 @@ function AddVendors() {
                   id="vendorcode"
                   name="vendorcode"
                   onChange={handleChangeEvent}
-                  required
                 />
               </div>
               <div class="col-md-4 mb-3">
@@ -129,7 +135,6 @@ function AddVendors() {
                   id="vendorfline"
                   name="vendorfline"
                   onChange={handleChangeEvent}
-                  required
                 />
               </div>
             </div>
@@ -141,7 +146,6 @@ function AddVendors() {
                 id="vendoradd"
                 name="vendoradd"
                 onChange={handleChangeEvent}
-                required
               />
             </div>
             <div className="row">
@@ -175,7 +179,6 @@ function AddVendors() {
                   id="vendoremail"
                   name="vendoremail"
                   onChange={handleChangeEvent}
-                  required
                 />
               </div>
             </div>
@@ -234,7 +237,6 @@ function AddVendors() {
                   id="vendorvat"
                   name="vendorvat"
                   onChange={handleChangeEvent}
-                  required
                 />
               </div>
               <div class="col-md-4 mb-3">
@@ -245,7 +247,6 @@ function AddVendors() {
                   id="vendordocno"
                   name="vendordocno"
                   onChange={handleChangeEvent}
-                  required
                 />
               </div>
             </div>

@@ -16,7 +16,7 @@ import InputLabel from "@material-ui/core/InputLabel";
 import DeleteOutlineIcon from "@material-ui/icons/DeleteOutline";
 import { useEffect } from "react";
 import Select from "@material-ui/core/Select";
-import MenuItem from "@material-ui/core/MenuItem";
+import { useHistory } from "react-router-dom";
 import axios from "axios";
 
 const useStyles = makeStyles((theme) => ({
@@ -33,6 +33,8 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 function Createpurchaseorder() {
+  const history = useHistory();
+
   const classes = useStyles();
 
   const [podocno, setPodocno] = useState();
@@ -353,7 +355,7 @@ function Createpurchaseorder() {
       .then((res) => {
         console.log("updated Values Successfully : ", res.data);
       });
-
+      history.push("/");
     console.log("multirow  data :", orderItem);
   };
 

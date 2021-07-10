@@ -129,7 +129,7 @@ const DataTable = () => {
                                         </tr>
                                     ))}
                                 </tbody>
-                                {/* <tr>
+                                <tr>
                                     <th scope="row">
                                         VENDOR_ID
                                     </th>
@@ -139,7 +139,7 @@ const DataTable = () => {
                                     <td>VENDOR CPERSON</td>
                                     <td>VENDOR MOBILE</td>
                                     <td>VENDOR EMAIL</td>
-                                </tr> */}
+                                </tr>
                             </table>
                             <Popup
                                 title="Employee Form"

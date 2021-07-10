@@ -16,8 +16,9 @@ import InputLabel from "@material-ui/core/InputLabel";
 import DeleteOutlineIcon from "@material-ui/icons/DeleteOutline";
 import { useEffect } from "react";
 import Select from "@material-ui/core/Select";
-import MenuItem from "@material-ui/core/MenuItem";
+import { useHistory } from "react-router-dom";
 import axios from "axios";
+// import {GetClientData} from "../Common/CommonCode";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -33,25 +34,49 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 function CreateQuotation() {
+  const history = useHistory();
+
   const classes = useStyles();
 
+  const [stateChange] = useState(false);
+  const [quotID, setQuotID] = useState();
   const [cqdate, setCqdate] = useState();
   const [cqclient, setCqclient] = useState();
-  const [cqname, setCqname] = useState("tetwet");
+  const [cqname, setCqname] = useState();
   const [cqmobileNo, setCqmobileNo] = useState();
   const [cqemail, setCqemail] = useState();
-  const [termscond, settermscond] = useState("1. Above rate is applicable for 10 hours per day, 260 hours permonth. /n2. Working less than 10 hours day will be considered asfull working day. /n3. Supply Food, accommodation & sitetransportation Scope of Client. /n4. In case of non-availabilityof work or inadequate weather conditions, normal daily rate willbe charged. /n5. Payment terms will be 30 days after receipt ofthe Entema al-shamal invoice. /n6. Above Rate is Exclusive of VAT. /n7. Mobilization will be done immediately after receiving theP.O. /n8. Our quotation valid for ten days from the date of thisoffers and is subject to the availability of manpower &equipment, until receipt of the P.O. /n9. All above mentionedconditions must be mentioned in your purchase order. Hope abovequotation is made good and looking forward to get your valuablepurchase order at the earliest. Your usual Cooperation would behighly appreciated.");
+  const [termCond, setTermCond] = useState("1. Above rate is applicable for 10 hours per day, 260 hours per month. \n2. Working less than 10 hours day will be considered as full working day. \n3. Supply Food, accommodation & site transportation Scope of Client. \n4. In case of non-availability of work or inadequate weather conditions, normal daily rate will be charged. \n5. Payment terms will be 30 days after receipt of the Entema al-shamal invoice. \n6. Above Rate is Exclusive of VAT . \n7. Mobilization will be done immediately after receiving the P.O. \n8. Our quotation valid for ten days from the date of this offers and is subject to the availability of manpower & equipment, until receipt of the P.O. \n9. All above mentioned conditions must be mentioned in your purchase order. Hope above quotation is made good and looking forward to get your valuable purchase order at the earliest. Your usual Cooperation would behighly appreciated.");
   const [ischeked, setIsChecked] = useState(false);
+  const [cqtypes, setCqtypes] = useState("Equipment");
+  
+  const [entPhone, setEntPhone] = useState("013 363 1210");
+  const [entEmail, setEntEmail] = useState("info@entema-sa.com");
+  const [entVAT, setEntVAT] = useState("310005823700003");
+  const [entMobile, setEntMobile] = useState("0559258940");
+  const [entFrom, setEntFrom] = useState("Entemasw");
 
-  let newData = []; 
-  let test = [];
+  const [quotDate, setQuotDate] = useState();
+  const [quotRefNo, setQuotRefNo] = useState("ENT/Jun-21/111");
+  const [newData, setNewData] = useState([]);
 
-  const ontest = () => {
+
+
+//   let newData = [];
+//   let arrayData = [];
+
+  const onTypeChange = () => {
     setIsChecked(!ischeked);
     setCqtypes(ischeked ? "Equipment" : "Man Power");
+
+    if (ischeked === true) {
+        setCqtypes("Equipment");
+    }
+    else{
+        setCqtypes("Man Power");
+    }
   };
 
-  const [cqtypes, setCqtypes] = useState("Equipment");
+  
 
   let taskList = {
     description: "",
@@ -61,28 +86,61 @@ function CreateQuotation() {
     amount: "",
   };
 
-  const [users, setUsers] = useState([]);
+  const [multiSet, setMultiSet] = useState([]);
 
   useEffect(() => {
-    axios.get("http://localhost:3004/getMulti", {}).then((res) => {
-      newData = res.data.rows;
-      console.log(newData);
-      var rows = [];
-
-      for (var i = 0; i < newData.length; i++) {
-        rows.push(taskList);
-
-        test[i] = {
-          description: newData[i].DESCRIPTION,
-          unit: newData[i].UNIT,
-          qty: newData[i].QTY,
-          mobAnddemob: newData[i].UNIT_RATE,
-          amount: newData[i].AMOUNT,
-        };
-      }
-      setUsers(test);
+    fetch("http://localhost:3009/getClientData", {
+        method : 'Get',
+        headers:{
+            'Content-Type':'application/json',
+                }
+    }).then(response => response.json())
+    .then(response => {setNewData(response);
+    console.log('My API data : ',response);
     });
-  }, []);
+
+    // setNewData(GetClientData());
+    
+
+    let currentDate = new Date();
+    let currentYear = new Intl.DateTimeFormat("en", { year: "numeric" }).format(
+      currentDate
+    );
+    let currentMonth = new Intl.DateTimeFormat("en", {
+      month: "numeric",
+    }).format(currentDate);
+    let currentDay = new Intl.DateTimeFormat("en", { day: "2-digit" }).format(
+      currentDate
+    );
+    console.log(`${currentDay}-${currentMonth}-${currentYear}`);
+
+    let formatedDate = currentDay + "-0" + currentMonth + "-" + currentYear;
+
+    setQuotDate(formatedDate);
+
+    generateUniqueId();
+
+  }, [stateChange]);
+
+  const generateUniqueId = () => {
+    let currentDate = new Date();
+    let uniqueValue =
+      "" +
+      currentDate.getFullYear() +
+      (currentDate.getMonth() + 1) +
+      currentDate.getDate() +
+      currentDate.getHours() +
+      currentDate.getMinutes() +
+      currentDate.getSeconds() +
+      currentDate.getMilliseconds();
+
+      setQuotID(uniqueValue);  
+      setQuotRefNo("ENT - "+uniqueValue);
+    console.log('My unique Values :', uniqueValue);
+    return uniqueValue;
+  };
+
+
   const optionUnit = [
     { key: "", value: "" },
     { key: "Month", value: "Month" },
@@ -91,7 +149,7 @@ function CreateQuotation() {
     { key: "Hour", value: "Hour" },
   ];
 
-  const handleChangeEvent = (e, index) => {
+   const handleChangeEvent = (e, index) => {
     const input = e.target.name;
 
     if (input === "cqdate") {
@@ -106,8 +164,8 @@ function CreateQuotation() {
       setCqemail(e.target.value);
     } else if (input === "cqtypes") {
       setCqtypes(e.target.value);
-    } else if (input === "termscond") {
-      settermscond(e.target.value);
+    } else if (input === "termCond") {
+      setTermCond(e.target.value);
     } else if (
       ["description", "unit", "qty", "mobAnddemob", "amount"].includes(input)
     ) {
@@ -123,49 +181,64 @@ function CreateQuotation() {
       " - dataset id - ",
       e.target
     );
-    console.log("log of order Items : ", users);
+    console.log("log of order Items : ", multiSet);
   };
 
-  const addUser = () => {
-    setUsers([...users, taskList]);
+  const addRow = () => {
+    setMultiSet([...multiSet, taskList]);
   };
 
   const removeUsers = (index) => {
     console.log("index value :", index);
-    const filteredUsers = [...users];
-    filteredUsers.splice(index, 1);
+    const filteredDataSet = [...multiSet];
+    filteredDataSet.splice(index, 1);
 
-    setUsers(filteredUsers);
+    setMultiSet(filteredDataSet);
   };
 
   const changeHandler = (e, index) => {
-    const updatedUsers = users.map((item, i) =>
+    const updatedDataSet = multiSet.map((item, i) =>
       index === i
         ? Object.assign(item, { [e.target.name]: e.target.value })
         : item
     );
     console.log("newnew:", e.target.value);
 
-    let test = updatedUsers.length - 1;
-
-    if (e.target.name === "unit_rate") {
-      console.log("value of quamtity :", e);
-      console.log("value of quamtity bhaya :", updatedUsers[test].qty);
-    }
-
-    setUsers(updatedUsers);
+    setMultiSet(updatedDataSet);
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log(cqdate);
-    console.log(cqclient);
-    console.log(cqname);
-    console.log(cqmobileNo);
-    console.log(cqemail);
-    console.log(cqtypes);
-    console.log(termscond);
-    console.log("multirow  data :", users);
+
+
+    axios.post("http://localhost:3009/insertQuotData", {
+        quotID:quotID,
+        quotRefNo:quotRefNo,
+        cqdate:cqdate,
+        entFrom:entFrom,
+        entMobile:entMobile,
+        cqclient:cqclient,
+        cqname:cqname,
+        cqmobileNo:cqmobileNo,
+        cqemail:cqemail,
+        cqtypes:cqtypes,
+        termCond:termCond,
+        multiSet:multiSet,
+    })
+    .then((res) => {
+      history.push("/");
+      console.log("updated Values Successfully : ", res.data);
+    });
+
+    // console.log(cqdate);
+    // console.log('dropdown : ', cqclient);
+    // console.log('name : ',cqname);
+    // console.log(cqmobileNo);
+    // console.log(cqemail);
+    // console.log(cqtypes);
+    // //console.log(tAc);
+    // console.log("multirow  data :", multiSet);
+   
   };
 
   return (
@@ -190,19 +263,20 @@ function CreateQuotation() {
                 <p>
                   Al-Jubail St P.O. Box 2816, Jubail 31951, Saudi Arabia
                   <br />
-                  <strong>Phone:</strong> 013 363 1210
+                  <strong>Phone:</strong> {entPhone}
                   <br />
-                  <strong>Email:</strong> info@entema-sa.com
+                  <strong>Email:</strong> {entEmail}
                   <br />
-                  <strong>VAT No:</strong> 310005823700003
+                  <strong>VAT No:</strong> {entVAT}
                 </p>
               </div>
             </div>
             <div className="top-quot2" style={{ marginLeft: "157px" }}>
-              <div className="  qt-left">Date : Jun 14, 2021</div>
-              <div className=" qt-left">Quot# : ENT/Jun-21/111</div>
+              <div className="  qt-left">Date : {quotDate} </div>
+              <div className=" qt-left">Quot# : {quotRefNo} </div>
             </div>
           </div>
+          <form onSubmit={handleSubmit} onChange={handleChangeEvent}>
           <div className="heading-layout1">
             <div className="item-title">
               <h4 style={{ color: "blue" }}>Work Schedule</h4>
@@ -223,8 +297,8 @@ function CreateQuotation() {
               />
             </div>
             <div className="top-quot2" style={{ marginLeft: "337px" }}>
-              <div className="  qt-left">From : Entemasw</div>
-              <div className=" qt-left">User Mobile No : 0559258940</div>
+              <div className="  qt-left">From : {entFrom} </div>
+              <div className=" qt-left">User Mobile No : {entMobile} </div>
             </div>
           </div>
           <div className="heading-layout1">
@@ -232,9 +306,8 @@ function CreateQuotation() {
               <h4 style={{ color: "blue" }}>Company</h4>
             </div>
           </div>
-          <form onSubmit={handleSubmit} onChange={handleChangeEvent}>
+          {/* <form onSubmit={handleSubmit} onChange={handleChangeEvent}> */}
             <div className="row">
-              {" "}
               <div class="col-md-6 mb-3">
                 <label for="cqclient">Client</label>
                 <select
@@ -242,10 +315,10 @@ function CreateQuotation() {
                   id="cqclient"
                   name="cqclient"
                   value={cqclient}
+                  required
                 >
-                  <option value="DEFAULT">Select Client</option>
-                  <option value="1">Zeeshan</option>
-                  <option value="2">shabaz</option>
+                <option key="" value="">Select Client</option>
+                 {newData.map((data) => <option key={data.CLIENT_ID} value={data.CLIENT_ID}>{data.CLIENT_CPNAME}</option>)}
                 </select>
               </div>
               <div class="col-md-6 mb-3">
@@ -256,6 +329,7 @@ function CreateQuotation() {
                   id="cqname"
                   name="cqname"
                   value={cqname}
+                  required
                 />
               </div>
             </div>
@@ -290,10 +364,10 @@ function CreateQuotation() {
             </div>
             Equipment
             <Switch
-              onChange={ontest}
+              onChange={onTypeChange}
               color="primary"
-              name="checkedB"
-              inputProps={{ "aria-label": "primary checkbox" }}
+              name="cqpes"
+              inputProps={{"aria-label": "primary checkbox" }}
             />
             Man Power
             <div className="heading-layout1">
@@ -303,7 +377,7 @@ function CreateQuotation() {
             </div>
             <Container className={classes.root}>
               <Paper component={Box} p={4}>
-                {users.map((item, index) => (
+                {multiSet.map((item, index) => (
                   <Grid
                     container
                     spacing={3}
@@ -342,13 +416,13 @@ function CreateQuotation() {
                             id: "outlined-age-native-simple",
                           }}
                         >
-                          {optionUnit.map((optionGender) => {
+                          {optionUnit.map((data) => {
                             return (
                               <option
-                                key={optionGender.key}
-                                value={optionGender.value}
+                                key={data.key}
+                                value={data.value}
                               >
-                                {optionGender.key}
+                                {data.key}
                               </option>
                             );
                           })}
@@ -358,6 +432,7 @@ function CreateQuotation() {
 
                     <Grid item md={2}>
                       <TextField
+                        type="number"
                         label="Qty"
                         name="qty"
                         //placeholder="Enter Your address"
@@ -382,7 +457,7 @@ function CreateQuotation() {
                     ) : (
                       <Grid item md={3}>
                         <TextField
-                          type="text"
+                          type="number"
                           label="Amount"
                           name="amount"
                           //placeholder="Enter Your address"
@@ -393,7 +468,6 @@ function CreateQuotation() {
                         />
                       </Grid>
                     )}
-
                     <Grid item md={1}>
                       <IconButton color="secondary">
                         <DeleteOutlineIcon onClick={() => removeUsers(index)} />
@@ -401,22 +475,26 @@ function CreateQuotation() {
                     </Grid>
                   </Grid>
                 ))}
-                <Button
-                  variant="contained"
-                  color="primary"
-                  onClick={addUser}
-                  style={{ marginTop: "10px" }}
-                >
-                  Add More
-                </Button>
+
               </Paper>
             </Container>
+            <Button
+                  type="button"
+                  variant="contained"
+                  color="primary"
+                  onClick={addRow}
+                  style={{ marginTop: "10px" }}
+                >
+                  Add Details
+                </Button>
             <div class="col-md-12 mb-3">
-              <label for="termscond">Terms & Conditions</label>
+            <br></br>
+              <label for="termCond">Terms & Conditions</label>
               <textarea
                 type="text"
                 className="form-control is-valid textarea"
-                name={termscond}
+                name="termCond"
+                value={termCond}
               >
               </textarea>
               <h6 style={{ marginTop: "10px" }}>
@@ -436,15 +514,15 @@ function CreateQuotation() {
                   <div className="col-sm-6">
                     <div className="bot-cl2">
                       <div className="row">
-                        <div className="col-sm-4 col-xs-4 bot-left">Name</div>
+                        <div className="col-sm-4 col-xs-4 bot-left">Name:</div>
                         <div className="col-sm-8 col-xs-8 bot-right"></div>
                       </div>
                       <div className="row">
-                        <div className="col-sm-4 col-xs-4 bot-left">Title</div>
+                        <div className="col-sm-4 col-xs-4 bot-left">Title:</div>
                         <div className="col-sm-8 col-xs-8 bot-right"></div>
                       </div>
                       <div className="row">
-                        <div className="col-sm-4 col-xs-4 bot-left">Date</div>
+                        <div className="col-sm-4 col-xs-4 bot-left">Date:</div>
                         <div className="col-sm-8 col-xs-8 bot-right"></div>
                       </div>
                       <div className="row">
@@ -470,17 +548,13 @@ function CreateQuotation() {
                       <div className="bot-in">Entemasw , Manager </div>
                     </div>
                   </div>
-
-                  <div className="col-sm-12">
-                    <div className="save" style={{ marginLeft: "800px" }}>
-                      <button type="submit" className="btn btn-primary">
-                        Save
-                      </button>
-                    </div>
-                  </div>
                 </div>
               </div>
             </div>
+            <br></br>
+            <button type="submit" class="btn btn-outline-success" style={{marginBottom:"30px"}}>
+                Submit
+              </button>
           </form>
         </div>
       </div>

@@ -1,10 +1,12 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react'
 import axios from 'axios';
+import { useHistory } from "react-router-dom";
 
 
 
 
 function Activities() {
+    const history = useHistory();
 
     const [AcActivityName, setAcActivityName] = useState();
     const [AcCreatedDate, setAcCreatedDate] = useState();
@@ -32,24 +34,48 @@ function Activities() {
         }
     };
 
+    useEffect(() => {
+        setAcCreatedDate(setDateFormat());
+    },[]);
+
     const handleSubmit = (e) => {
         e.preventDefault();
- 
+
         axios.post("http://localhost:3009/insertActivitiesData", {
- 
-            actname:AcActivityName,
-            actenddate:AcEndDate,
-            actdescription:AcDescription,
-            
+
+            actname: AcActivityName,
+            actenddate: AcEndDate,
+            actdescription: AcDescription,
+
         }).then((res) => {
             // setData(res.data);
             //  setDupData(res.data);
-             console.log("result set in effect: ", res);
-           });
-        
-        
-          }
+            history.push("/");
+            console.log("result set in effect: ", res);
+        });
+    }
 
+
+    const setDateFormat = ()=> {
+        let currentDate = new Date();
+        let currentYear = new Intl.DateTimeFormat("en", { year: "numeric" }).format(currentDate);
+        let currentMonth = new Intl.DateTimeFormat("en", {month: "numeric",}).format(currentDate);
+        let currentDay = new Intl.DateTimeFormat("en", { day: "2-digit" }).format(currentDate);
+        
+        console.log(`${currentDay}-${currentMonth}-${currentYear}`);
+    
+        // let formatedDate = currentDay + "-0" + currentMonth + "-" + currentYear;
+ 
+        let formatedDate;
+ 
+        if (currentMonth in [1,2,3,4,5,6,7,8,9]){
+            formatedDate = currentYear + "-0" + currentMonth + "-" + currentDay;
+        }else{
+            formatedDate = currentYear + "-" + currentMonth + "-" + currentDay;
+        }
+ 
+        return formatedDate;
+    }
 
     return (
         <>
@@ -72,11 +98,11 @@ function Activities() {
                         <div className="row">
                             <div class="col-md-4 mb-3">
                                 <label for="userName">Created Date</label>
-                                <input type="Date" class="form-control is-valid" value={AcCreatedDate} id="AcCreatedDate" name="AcCreatedDate" reqired />
+                                <input type="Date" class="form-control is-valid" value={AcCreatedDate} id="AcCreatedDate" name="AcCreatedDate" disabled />
                             </div>
                             <div class="col-md-4 mb-3">
                                 <label for="userName">End Date</label>
-                                <input type="Date" class="form-control is-valid" value={AcEndDate} id="AcEndDate" name="AcEndDate"  />
+                                <input type="Date" class="form-control is-valid" value={AcEndDate} id="AcEndDate" name="AcEndDate" />
                             </div>
                         </div>
 

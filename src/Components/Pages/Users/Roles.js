@@ -1,14 +1,12 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react'
 import axios from 'axios';
 import { makeStyles, useTheme } from '@material-ui/core/styles';
 import Input from '@material-ui/core/Input';
-import InputLabel from '@material-ui/core/InputLabel';
 import MenuItem from '@material-ui/core/MenuItem';
 import FormControl from '@material-ui/core/FormControl';
-import ListItemText from '@material-ui/core/ListItemText';
 import Select from '@material-ui/core/Select';
-import Checkbox from '@material-ui/core/Checkbox';
 import Chip from '@material-ui/core/Chip';
+import { useHistory } from "react-router-dom";
 
 const useStyles = makeStyles((theme) => ({
     formControl: {
@@ -64,6 +62,7 @@ function getStyles(name, personName, theme) {
 export default function Roles() {
     const classes = useStyles();
     const theme = useTheme();
+    const history = useHistory();
     const [personName, setPersonName] = React.useState([]);
     const [RoRolesName, setRoRolesName] = useState();
     const [RoCreatedDate, setRoCreatedDate] = useState();
@@ -93,6 +92,10 @@ export default function Roles() {
         }
     };
 
+    useEffect(() => {
+        setRoCreatedDate(setDateFormat());
+    },[]);
+
     const handleSubmit = (e) => {
         e.preventDefault();
  
@@ -102,13 +105,36 @@ export default function Roles() {
             rlenddate:RoEndDate,
             rldescription:RoDescription,
             
-        })
-        .then((res) => {
-          console.log("updated Values Successfully : ", res.data);
-        });
- 
-        console.log('test submit');
-    }
+        }).then((res) => {
+            // setData(res.data);
+            //  setDupData(res.data);
+            history.push("/");
+             console.log("result set in effect: ", res);
+           });
+        
+        
+          }
+
+          const setDateFormat = ()=> {
+            let currentDate = new Date();
+            let currentYear = new Intl.DateTimeFormat("en", { year: "numeric" }).format(currentDate);
+            let currentMonth = new Intl.DateTimeFormat("en", {month: "numeric",}).format(currentDate);
+            let currentDay = new Intl.DateTimeFormat("en", { day: "2-digit" }).format(currentDate);
+            
+            console.log(`${currentDay}-${currentMonth}-${currentYear}`);
+        
+            // let formatedDate = currentDay + "-0" + currentMonth + "-" + currentYear;
+     
+            let formatedDate;
+     
+            if (currentMonth in [1,2,3,4,5,6,7,8,9]){
+                formatedDate = currentYear + "-0" + currentMonth + "-" + currentDay;
+            }else{
+                formatedDate = currentYear + "-" + currentMonth + "-" + currentDay;
+            }
+     
+            return formatedDate;
+        }
 
     return (
         <>
@@ -131,7 +157,7 @@ export default function Roles() {
                         <div className="row">
                             <div class="col-md-4 mb-3">
                                 <label for="userName">Created Date</label>
-                                <input type="Date" class="form-control is-valid" value={RoCreatedDate} id="RoCreatedDate" name="RoCreatedDate"  />
+                                <input type="Date" class="form-control is-valid" value={RoCreatedDate} id="RoCreatedDate" name="RoCreatedDate" disabled />
                             </div>
                             <div class="col-md-4 mb-3">
                                 <label for="userName">End Date</label>

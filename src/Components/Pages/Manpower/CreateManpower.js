@@ -16,7 +16,7 @@ import { makeStyles } from "@material-ui/core/styles";
 import InputLabel from "@material-ui/core/InputLabel";
 import DeleteOutlineIcon from "@material-ui/icons/DeleteOutline";
 import Switch from '@material-ui/core/Switch';
-import Select from "@material-ui/core/Select";
+import { useHistory } from "react-router-dom";
 import axios from "axios";
 // import { RiUserSettingsLine } from 'react-icons/ri'
 
@@ -39,7 +39,7 @@ const useStyles = makeStyles((theme) => ({
 function CreateManpower() {
 
     const classes = useStyles();
-
+    const history = useHistory();
 
     const [MpManPower, setMpManPower] = useState();
     const [MpMonth, setMpMont] = useState();
@@ -67,6 +67,25 @@ function CreateManpower() {
     );
 
     const [users, setUsers] = useState([]);
+
+
+    const MonthLov = [
+        {key : "", value:"Select Status"},
+        {key : "1", value:"Jan"},
+        {key : "2", value:"Feb"},
+        {key : "3", value:"Mar"},
+        {key : "4", value:"Apr"},
+        {key : "5", value:"May"},
+        {key : "6", value:"Jun"},
+        {key : "7", value:"Jul"},
+        {key : "8", value:"Aug"},
+        {key : "9", value:"Sep"},
+        {key : "10", value:"Oct"},
+        {key : "11", value:"Nov"},
+        {key : "12", value:"Dec"}
+    ]
+
+
 
 
     const optionUnit = [
@@ -216,6 +235,7 @@ function CreateManpower() {
  
         })
         .then((res) => {
+            history.push("/");
           console.log("updated Values Successfully : ", res.data);
         });
 
@@ -288,19 +308,7 @@ function CreateManpower() {
                         <div class="col-md-4 mb-3" >
                             <label for="userRole">Month</label>
                             <select class="form-control is-valid" value={MpMonth} id="MpMonth" name="MpMonth" required>
-                                <option value="">Select Month</option>
-                                <option value="1">Jan</option>
-                                <option value="2">Feb</option>
-                                <option value="3">Mar</option>
-                                <option value="4">Apr</option>
-                                <option value="5">May</option>
-                                <option value="6">Jun</option>
-                                <option value="7">Jul</option>
-                                <option value="8">Aug</option>
-                                <option value="9">Sep</option>
-                                <option value="10">Oct</option>
-                                <option value="11">Nov</option>
-                                <option value="12">Dec</option>
+                            {MonthLov.map((data) => <option key={data.key} value={data.key}>{data.value}</option>)} 
                             </select>
                         </div>
                         <div class="col-md-4 mb-3" >
